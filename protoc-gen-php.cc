@@ -241,12 +241,15 @@ void PHPCodeGenerator::PrintMessageRead(io::Printer &printer, const Descriptor &
         const FieldDescriptor &field (*message.field(i));
 
         string var ( VariableName(field) );
-        if (field.is_repeated())
+        if (field.is_repeated()) {
             var += "[]";
-        if (field.is_packable())
-            throw "Error we do not yet support packed values";
-        if (field.is_required())
+        }
+        if (field.is_packed()) {
+            throw "Error: packed values not supported yet";
+        }
+        if (field.is_required()) {
             required_fields.push_back( &field );
+        }
 
         string commands;
 
@@ -524,8 +527,8 @@ void PHPCodeGenerator::PrintMessageWrite(io::Printer &printer, const Descriptor 
     for (int i = 0; i < message.field_count(); ++i) {
         const FieldDescriptor &field ( *message.field(i) );
 
-        if (field.is_packable()) {
-            throw "Error we do not yet support packed values";
+        if (field.is_packed()) {
+            throw "Error: packed values not supported yet";
         }
 
         // Create the tag.
